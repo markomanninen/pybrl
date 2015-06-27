@@ -16,7 +16,6 @@ Braille (6-dot cell patterns) for Python
 - braille to hex
 - braille to dot
 - braille to matrix
-
 - ascii to braille
 - hex to braille
 - dot to braille
@@ -30,11 +29,11 @@ TODO!
 
 CSV file, that hold basic mapping between Braille symbols, ascii, hex, unicode, dot, matrix, words, meanings and decodings data.
 
-(braille_mappings.csv)[https://github.com/markomanninen/pybrl/blob/master/braille_mappings.csv]
+https://github.com/markomanninen/pybrl/blob/master/braille_mappings.csv
 
 ## IPython notebook demo
 
-(Braille for Python (pybrl).ipynb)[https://github.com/markomanninen/pybrl/blob/master/Braille%20for%20Python%20(pybrl).ipynb]
+https://github.com/markomanninen/pybrl/blob/master/Braille%20for%20Python%20(pybrl).ipynb
 
 Sources:
 
