@@ -12,7 +12,7 @@ import pybrl
 print(pybrl.braille("braille for python is cool!"))
 # Output: "⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮"
 
-print(pybrl.ascii("⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮"))
+print(pybrl.braille_to_ascii("⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮"))
 # Output: "braille for python is cool!"
 ```
 
@@ -36,8 +36,8 @@ pybrl "⠁⠃" --from braille --to hex
 
 ## Conversions
 
-- braille to ascii
-- braille to hex
+- braille to ascii (function `braille_to_ascii`, alias `ascii`)
+- braille to hex (function `braille_to_hex`, alias `hex`)
 - braille to dot
 - braille to matrix
 - ascii to braille
@@ -45,9 +45,21 @@ pybrl "⠁⠃" --from braille --to hex
 - dot to braille
 - matrix to braille
 
-## Contradictions (Grade 2)
+## Contractions (Grade 2)
 
-TODO!
+Partial support for Grade 2 Braille (contracted braille) has been implemented.
+Use the `braille2(string)` function to convert text to Grade 2 Braille.
+
+Currently supported features:
+- **Alphabetic Wordsigns**: Single letters representing whole words (e.g., 'b' -> 'but', 'c' -> 'can').
+- **Strong Wordsigns**: Common words like 'and', 'the', 'with'.
+- **Strong Groupsigns**: Letter groups like 'ch', 'sh', 'ing', 'ed'.
+
+Example:
+```python
+print(pybrl.braille2("you and the child"))
+# Output: "⠽⠀⠯⠀⠮⠀⠡"
+```
 
 ## Symbols mappings
 

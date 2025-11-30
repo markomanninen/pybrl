@@ -148,10 +148,32 @@ class TestPyBrlComprehensive(unittest.TestCase):
                 # 41 -> ⠁ (a), 42 -> ⠃ (b)
                 self.assertEqual(fake_out.getvalue().strip(), "⠁⠃")
 
-    def test_braille2_not_supported(self):
-        """Test that braille2 returns the not supported message."""
-        msg = braille2("anything")
-        self.assertIn("Grade 2 conversion not supported yet", msg)
+    def test_braille2_basic(self):
+        """Test basic Grade 2 Braille conversion."""
+        # Alphabetic Wordsigns
+        self.assertEqual(braille2("but"), "⠃")
+        self.assertEqual(braille2("can"), "⠉")
+        self.assertEqual(braille2("knowledge"), "⠅")
+        
+        # Strong Wordsigns
+        self.assertEqual(braille2("and"), "⠯")
+        self.assertEqual(braille2("the"), "⠮")
+        self.assertEqual(braille2("with"), "⠾")
+        
+        # Strong Groupsigns
+        # 'shout' -> 'sh' + 'ou' + 't' -> ⠩ + ⠳ + ⠞
+        self.assertEqual(braille2("shout"), "⠩⠳⠞")
+        # 'child' (wordsign) -> ⠡
+        self.assertEqual(braille2("child"), "⠡")
+        # 'children' (group 'ch' + 'en'?) -> 'ch' is ⠡. 'en' is ⠢ (not yet impl).
+        # 'children' -> 'ch' + 'i' + 'l' + 'd' + 'r' + 'e' + 'n' (if only ch implemented)
+        # With current impl: 'ch' (⠡) + i + l + d + r + 'en' (no en yet) -> ⠡⠊⠇⠙⠗⠑⠝
+        self.assertEqual(braille2("children"), "⠡⠊⠇⠙⠗⠑⠝")
+        
+        # Mixed sentence
+        # "you and the child" -> "y" + " " + "and" + " " + "the" + " " + "child"
+        # ⠽⠀⠯⠀⠮⠀⠡
+        self.assertEqual(braille2("you and the child"), "⠽⠀⠯⠀⠮⠀⠡")
 
     def test_generic_convert(self):
         """Test the generic convert function."""
