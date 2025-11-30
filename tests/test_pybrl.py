@@ -2,11 +2,12 @@ import unittest
 import argparse
 from io import StringIO
 from unittest.mock import patch
-from pybrl.main import (
+from pybrl import (
     braille, ascii, hex, dot, matrix,
     hex2braille, dot2braille, matrix2braille,
-    cli, asciicodes, brailles
+    asciicodes, brailles
 )
+from pybrl.main import cli, convert, convert_list, braille2
 
 class TestPyBrlComprehensive(unittest.TestCase):
 
@@ -143,17 +144,13 @@ class TestPyBrlComprehensive(unittest.TestCase):
 
     def test_braille2_not_supported(self):
         """Test that braille2 returns the not supported message."""
-        from pybrl.main import braille2
         msg = braille2("anything")
         self.assertIn("Grade 2 conversion not supported yet", msg)
 
     def test_generic_convert(self):
         """Test the generic convert function."""
-        from pybrl.main import convert
         # convert(string, toNotation, fromNotation)
-        # Let's try ascii -> braille using the lists directly
-        # We need to import the lists or use the ones we have
-        from pybrl.main import asciicodes, brailles
+        from pybrl import asciicodes, brailles
         
         res = convert("abc", brailles, asciicodes)
         # convert returns a list of mapped values
@@ -162,6 +159,21 @@ class TestPyBrlComprehensive(unittest.TestCase):
         # Test unknown char
         res = convert("a~b", brailles, asciicodes)
         # '~' is not in asciicodes, so it should be skipped
+        self.assertEqual(res, ["⠁", "⠃"])
+
+    def test_convert_list(self):
+        """Test the convert_list function."""
+        # convert_list(arr, toNotation, fromNotation)
+        from pybrl import asciicodes, brailles
+        
+        # Test converting a list of characters
+        input_list = ['a', 'b', 'c']
+        res = convert_list(input_list, brailles, asciicodes)
+        self.assertEqual(res, ["⠁", "⠃", "⠉"])
+        
+        # Test with unknown element
+        input_list_mixed = ['a', '~', 'b']
+        res = convert_list(input_list_mixed, brailles, asciicodes)
         self.assertEqual(res, ["⠁", "⠃"])
 
     def test_csv_consistency(self):
