@@ -203,12 +203,12 @@ def cli():
     elif args.from_type == 'braille' and args.to_type == 'matrix':
         print(matrix(input_data))
     elif args.from_type == 'hex' and args.to_type == 'braille':
-         # Assume input is comma separated hex codes
-         arr = input_data.split(',')
-         print(hex2braille(arr))
+        # Assume input is comma separated hex codes
+        arr = input_data.split(',')
+        print(hex2braille(arr))
     elif args.from_type == 'dot' and args.to_type == 'braille':
-         arr = input_data.split(',')
-         print(dot2braille(arr))
+        arr = input_data.split(',')
+        print(dot2braille(arr))
     # Matrix input via CLI is tricky, skipping for now or user can pass JSON string?
     # sticking to basic requirements.
     else:
