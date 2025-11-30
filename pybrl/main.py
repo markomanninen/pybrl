@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # file: main.py
 import argparse
-import sys
 
 # u2800 - u283F
 unibase = ['280', '281', '282', '283']
