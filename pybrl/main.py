@@ -142,13 +142,29 @@ alphabetic_wordsigns = {
 # Strong Contractions (words)
 strong_wordsigns = {
     'child': '⠡', 'shall': '⠩', 'this': '⠹', 'which': '⠱', 'out': '⠳', 'still': '⠌',
-    'and': '⠯', 'for': '⠿', 'of': '⠷', 'the': '⠮', 'with': '⠾'
+    'and': '⠯', 'for': '⠿', 'of': '⠷', 'the': '⠮', 'with': '⠾',
+    # Lower Wordsigns
+    'his': '⠦', 'was': '⠴', 'were': '⠶', 'enough': '⠢', 'in': '⠔', 'be': '⠆' 
+    # Note: 'enough', 'in', 'be' are also groupsigns, but handled separately or via wordsign match first
 }
 
 # Strong Groupsigns (part of words)
 strong_groupsigns = {
     'ch': '⠡', 'gh': '⠣', 'sh': '⠩', 'th': '⠹', 'wh': '⠱', 'ed': '⠫',
-    'er': '⠻', 'ou': '⠳', 'ow': '⠪', 'st': '⠌', 'ing': '⠬', 'ar': '⠜'
+    'er': '⠻', 'ou': '⠳', 'ow': '⠪', 'st': '⠌', 'ing': '⠬', 'ar': '⠜',
+    'and': '⠯', 'for': '⠿', 'of': '⠷', 'the': '⠮', 'with': '⠾',
+    # Lower Groupsigns (simplified, 'en'='enough' symbol, 'in'='in' symbol)
+    'en': '⠢', 'in': '⠔', 
+    # Initial-Letter Contractions (Dot 5)
+    'day': '⠐⠙', 'ever': '⠐⠑', 'father': '⠐⠋', 'here': '⠐⠓', 'know': '⠐⠅',
+    'lord': '⠐⠇', 'mother': '⠐⠍', 'name': '⠐⠝', 'one': '⠐⠕', 'part': '⠐⠏',
+    'question': '⠐⠟', 'right': '⠐⠗', 'some': '⠐⠎', 'time': '⠐⠞', 'under': '⠐⠥',
+    'work': '⠐⠺', 'young': '⠐⠽',
+    # Initial-Letter Contractions (Dot 4-5)
+    'upon': '⠘⠥', 'word': '⠘⠺', 'these': '⠘⠮', 'those': '⠘⠹', 'whose': '⠘⠱',
+    # Initial-Letter Contractions (Dot 4-5-6)
+    'cannot': '⠸⠉', 'had': '⠸⠓', 'many': '⠸⠍', 'spirit': '⠸⠎', 'world': '⠸⠺',
+    'their': '⠸⠮'
 }
 
 def braille2(string):
@@ -158,6 +174,8 @@ def braille2(string):
     - Alphabetic Wordsigns (e.g., 'but' -> 'b')
     - Strong Wordsigns (e.g., 'and', 'the')
     - Strong Groupsigns (e.g., 'ch', 'sh', 'ing')
+    - Lower Wordsigns (e.g., 'his', 'was')
+    - Initial-Letter Contractions (e.g., 'day', 'know', 'cannot')
     """
     words_list = string.split(' ')
     res = []
