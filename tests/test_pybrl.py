@@ -3,7 +3,7 @@ import argparse
 from io import StringIO
 from unittest.mock import patch
 from pybrl import (
-    braille, ascii, hex, dot, matrix,
+    braille, ascii, braille_to_ascii, hex, braille_to_hex, dot, matrix,
     hex2braille, dot2braille, matrix2braille,
     asciicodes, brailles
 )
@@ -43,15 +43,18 @@ class TestPyBrlComprehensive(unittest.TestCase):
 
     def test_braille_to_ascii_basic(self):
         """Test basic Braille to ASCII conversion."""
+        self.assertEqual(braille_to_ascii("⠁"), "a")
+        self.assertEqual(braille_to_ascii("⠃"), "b")
+        self.assertEqual(braille_to_ascii("⠀"), " ")
+        
+        # Test alias
         self.assertEqual(ascii("⠁"), "a")
-        self.assertEqual(ascii("⠃"), "b")
-        self.assertEqual(ascii("⠀"), " ")
 
     def test_braille_to_ascii_roundtrip(self):
         """Test roundtrip conversion for all supported characters."""
         for char in asciicodes:
             b = braille(char)
-            a = ascii(b)
+            a = braille_to_ascii(b)
             self.assertEqual(a, char, f"Roundtrip failed for {char}")
 
     def test_hex_conversion(self):
@@ -60,15 +63,18 @@ class TestPyBrlComprehensive(unittest.TestCase):
         # In main.py: hexcodes are constructed from hexbase and hexend.
         # braille_to_hex_map maps brailles to hexcodes.
         b_str = "⠁"
-        h = hex(b_str)
+        h = braille_to_hex(b_str)
         self.assertEqual(len(h), 1)
         # Verify roundtrip
         b_back = hex2braille(h)
         self.assertEqual(b_back, b_str)
+        
+        # Test alias
+        self.assertEqual(hex(b_str), h)
 
         # Multiple chars
         b_str_multi = "⠁⠃"
-        h_multi = hex(b_str_multi)
+        h_multi = braille_to_hex(b_str_multi)
         self.assertEqual(len(h_multi), 2)
         self.assertEqual(hex2braille(h_multi), b_str_multi)
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # file: __init__.py
 
-from .main import convert, braille, ascii, matrix, hex, dot, \
+from .main import convert, braille, ascii, braille_to_ascii, matrix, hex, braille_to_hex, dot, \
                  matrix2braille, hex2braille, dot2braille, \
                  unicodes, brailles, matrixcodes, hexcodes, \
                  asciicodes, dotcodes, meanings, words, decodings, \
@@ -13,9 +13,11 @@ exporting:
 
 - convert
 - braille
-- ascii
+- ascii (deprecated, use braille_to_ascii)
+- braille_to_ascii
 - matrix
-- hex
+- hex (deprecated, use braille_to_hex)
+- braille_to_hex
 - dot
 - matrix2braille
 - hex2braille

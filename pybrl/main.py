@@ -133,16 +133,22 @@ def braille2(string):
     return "Grade 2 conversion not supported yet. you should use convert function to find out translation possibilities for Grade 2."
 
 # braille to ascii
-def ascii(string):
+def braille_to_ascii(string):
     return ''.join([braille_to_ascii_map.get(c, '') for c in string])
+
+# alias for backward compatibility (shadows built-in ascii)
+ascii = braille_to_ascii
 
 # braille to matrix
 def matrix(string):
     return [braille_to_matrix_map.get(c, None) for c in string if c in braille_to_matrix_map]
 
 # braille to hex
-def hex(string):
+def braille_to_hex(string):
     return [braille_to_hex_map.get(c, '') for c in string if c in braille_to_hex_map]
+
+# alias for backward compatibility (shadows built-in hex)
+hex = braille_to_hex
 
 # braille to dot
 def dot(string):
@@ -195,9 +201,9 @@ def cli():
     if args.from_type == 'ascii' and args.to_type == 'braille':
         print(braille(input_data))
     elif args.from_type == 'braille' and args.to_type == 'ascii':
-        print(ascii(input_data))
+        print(braille_to_ascii(input_data))
     elif args.from_type == 'braille' and args.to_type == 'hex':
-        print(hex(input_data))
+        print(braille_to_hex(input_data))
     elif args.from_type == 'braille' and args.to_type == 'dot':
         print(dot(input_data))
     elif args.from_type == 'braille' and args.to_type == 'matrix':
