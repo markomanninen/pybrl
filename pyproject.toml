@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pybrl"
-version = "0.1.0"
-description = "Braille (6-dot cell patterns) for Python"
+version = "0.3.0"
+description = "Braille (6-dot cell patterns) for Python 3"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "MIT"}
