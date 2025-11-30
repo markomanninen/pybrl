@@ -1,8 +1,8 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # file: __init__.py
 
-from main import convert, braille, ascii, matrix, hex, dot, \
+from .main import convert, braille, ascii, matrix, hex, dot, \
                  matrix2braille, hex2braille, dot2braille, \
                  unicodes, brailles, matrixcodes, hexcodes, \
                  asciicodes, dotcodes, meanings, words, decodings, \

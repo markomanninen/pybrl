@@ -1,11 +1,14 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # file: main.py
+import argparse
+import sys
 
 # u2800 - u283F
 unibase = ['280', '281', '282', '283']
 uniend = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
-ordered_unicodes = [unichr(int(''.join(['0x', j, i]),0)) for j in unibase for i in uniend]
+# Python 3 uses chr() instead of unichr()
+ordered_unicodes = [chr(int(''.join(['0x', j, i]),0)) for j in unibase for i in uniend]
 
 # 64 symbols
 brailles = ['⠀','⠮','⠐','⠼','⠫','⠩','⠯','⠄','⠷','⠾','⠡','⠬','⠠','⠤','⠨','⠌','⠴','⠂','⠆','⠒','⠲','⠢',
@@ -13,14 +16,14 @@ brailles = ['⠀','⠮','⠐','⠼','⠫','⠩','⠯','⠄','⠷','⠾','⠡','�
             '⠇','⠍','⠝','⠕','⠏','⠟','⠗','⠎','⠞','⠥','⠧','⠺','⠭','⠽','⠵','⠪','⠳','⠻','⠘','⠸']
 
 # corresponding unicodes for Braille symbols
-unicodes = [u'\u2800',u'\u282e',u'\u2810',u'\u283c',u'\u282b',u'\u2829',u'\u282f',u'\u2804',
-            u'\u2837',u'\u283e',u'\u2821',u'\u282c',u'\u2820',u'\u2824',u'\u2828',u'\u280c',
-            u'\u2834',u'\u2802',u'\u2806',u'\u2812',u'\u2832',u'\u2822',u'\u2816',u'\u2836',
-            u'\u2826',u'\u2814',u'\u2831',u'\u2830',u'\u2823',u'\u283f',u'\u281c',u'\u2839',
-            u'\u2808',u'\u2801',u'\u2803',u'\u2809',u'\u2819',u'\u2811',u'\u280b',u'\u281b',
-            u'\u2813',u'\u280a',u'\u281a',u'\u2805',u'\u2807',u'\u280d',u'\u281d',u'\u2815',
-            u'\u280f',u'\u281f',u'\u2817',u'\u280e',u'\u281e',u'\u2825',u'\u2827',u'\u283a',
-            u'\u282d',u'\u283d',u'\u2835',u'\u282a',u'\u2833',u'\u283b',u'\u2818',u'\u2838']
+unicodes = ['\u2800','\u282e','\u2810','\u283c','\u282b','\u2829','\u282f','\u2804',
+            '\u2837','\u283e','\u2821','\u282c','\u2820','\u2824','\u2828','\u280c',
+            '\u2834','\u2802','\u2806','\u2812','\u2832','\u2822','\u2816','\u2836',
+            '\u2826','\u2814','\u2831','\u2830','\u2823','\u283f','\u281c','\u2839',
+            '\u2808','\u2801','\u2803','\u2809','\u2819','\u2811','\u280b','\u281b',
+            '\u2813','\u280a','\u281a','\u2805','\u2807','\u280d','\u281d','\u2815',
+            '\u280f','\u281f','\u2817','\u280e','\u281e','\u2825','\u2827','\u283a',
+            '\u282d','\u283d','\u2835','\u282a','\u2833','\u283b','\u2818','\u2838']
 
 
 # corresponding bitwise matrix for Braille symbols
@@ -85,50 +88,132 @@ decodings = ['SPACE/empty','THE/5-there/4-5-these/4-5-6-their','5-','ble/#','ed'
              'v/VERY','w/WILL/5-work/4-5-word/4-5-6-world','x/IT','y/YOU/5-young/5-6-ity/6-ally/','z/AS','ow','ou/OUT/5-ought','er',
              '4-5- ','4-5-6-']
 
+# Create dictionaries for O(1) lookups
+def _create_mapping(keys, values):
+    return {k: v for k, v in zip(keys, values)}
+
+ascii_to_braille_map = _create_mapping(asciicodes, brailles)
+braille_to_ascii_map = _create_mapping(brailles, asciicodes)
+braille_to_matrix_map = _create_mapping(brailles, matrixcodes)
+matrix_to_braille_map = {tuple(tuple(r) for r in m): b for m, b in zip(matrixcodes, brailles)}
+braille_to_hex_map = _create_mapping(brailles, hexcodes)
+hex_to_braille_map = _create_mapping(hexcodes, brailles)
+braille_to_dot_map = _create_mapping(brailles, dotcodes)
+dot_to_braille_map = _create_mapping(dotcodes, brailles)
+
 def convert(string, toNotation, fromNotation):
-    return [toNotation[fromNotation.index(d)] for c in string.decode('utf-8') for d in fromNotation if c == d.decode('utf-8')]
+    # This remains for backward compatibility or generic use, but optimized where possible
+    # if both are hashable, we could build a map on the fly or use existing ones
+    # But for now, let's keep the logic but remove decode('utf-8')
+    # And improve efficiency by building a temp map if len(string) is large?
+    # For now, just fixing the decode issue.
+    # The original implementation was:
+    # return [toNotation[fromNotation.index(d)] for c in string.decode('utf-8') for d in fromNotation if c == d.decode('utf-8')]
+
+    # New implementation:
+    # This logic was essentially: find c in fromNotation, map to toNotation.
+    # It assumes 1-to-1 mapping.
+
+    res = []
+    # Create a lookup map for faster access
+    # Note: toNotation and fromNotation must be aligned
+    lookup = dict(zip(fromNotation, toNotation))
+
+    for c in string:
+        if c in lookup:
+            res.append(lookup[c])
+        # Original code didn't append anything if not found.
+    return res
 
 # ascii to braille. currently supporting grade 1 conversion only
-# you should use convert function to find out possible translations for braille code:
-# convert("⠏⠽⠃⠗⠁⠊⠇⠇⠑⠀⠊⠎⠀⠉⠕⠕⠇⠮", meanings, brailles) OR
-# convert("⠏⠽⠃⠗⠁⠊⠇⠇⠑⠀⠊⠎⠀⠉⠕⠕⠇⠮", words, brailles) OR
-# convert("⠏⠽⠃⠗⠁⠊⠇⠇⠑⠀⠊⠎⠀⠉⠕⠕⠇⠮", decodings, brailles)
 def braille(string):
-    return ''.join(convert(string, brailles, asciicodes))
+    # Optimized using dictionary
+    return ''.join([ascii_to_braille_map.get(c, '') for c in string])
 
 def braille2(string):
     return "Grade 2 conversion not supported yet. you should use convert function to find out translation possibilities for Grade 2."
 
 # braille to ascii
 def ascii(string):
-    return ''.join(convert(string, asciicodes, brailles))
+    return ''.join([braille_to_ascii_map.get(c, '') for c in string])
 
 # braille to matrix
 def matrix(string):
-    return convert(string, matrixcodes, brailles)
+    return [braille_to_matrix_map.get(c, None) for c in string if c in braille_to_matrix_map]
 
 # braille to hex
 def hex(string):
-    return convert(string, hexcodes, brailles)
+    return [braille_to_hex_map.get(c, '') for c in string if c in braille_to_hex_map]
 
 # braille to dot
 def dot(string):
-    return convert(string, dotcodes, brailles)
+    return [braille_to_dot_map.get(c, '') for c in string if c in braille_to_dot_map]
 
 # helper function for n2braille
-# these functions differs from ascii, matrix, hex and dot by taking
-# an array of items instead of a string
 def convert_list(arr, toNotation, fromNotation):
-    return [toNotation[fromNotation.index(c)] for c in arr]
+    lookup = dict(zip(fromNotation, toNotation))
+    return [lookup.get(c) for c in arr if c in lookup]
 
 # matrix to braille
 def matrix2braille(arr):
-    return ''.join(convert_list(arr, brailles, matrixcodes))
+    # arr is a list of matrices (lists of lists)
+    # Lists are not hashable, so we need to convert to tuple of tuples for lookup
+    result = []
+    for m in arr:
+        # Check if m is a list of lists and convert to tuple of tuples
+        if isinstance(m, list):
+            key = tuple(tuple(r) for r in m)
+        else:
+            key = m
+        if key in matrix_to_braille_map:
+            result.append(matrix_to_braille_map[key])
+    return ''.join(result)
 
 # hex to braille
 def hex2braille(arr):
-    return ''.join(convert_list(arr, brailles, hexcodes))
+    return ''.join([hex_to_braille_map.get(c, '') for c in arr])
 
 # dot to braille
 def dot2braille(arr):
-    return ''.join(convert_list(arr, brailles, dotcodes))
+    return ''.join([dot_to_braille_map.get(c, '') for c in arr])
+
+
+def cli():
+    parser = argparse.ArgumentParser(description="Braille for Python (pybrl) - Conversion Tool")
+    parser.add_argument("input", help="Input string or data to convert")
+    parser.add_argument("--to", dest="to_type", choices=['braille', 'ascii', 'hex', 'dot', 'matrix'], default='braille', help="Target format")
+    parser.add_argument("--from", dest="from_type", choices=['ascii', 'braille', 'hex', 'dot', 'matrix'], default='ascii', help="Source format")
+
+    args = parser.parse_args()
+
+    input_data = args.input
+
+    # Handle input data parsing for list-based inputs (hex, dot, matrix)
+    # This is a simple CLI, handling complex structures like matrix via CLI arg is hard.
+    # We will assume comma separated values for hex and dot if source is not ascii/braille?
+    # Or just keep it simple for now.
+
+    if args.from_type == 'ascii' and args.to_type == 'braille':
+        print(braille(input_data))
+    elif args.from_type == 'braille' and args.to_type == 'ascii':
+        print(ascii(input_data))
+    elif args.from_type == 'braille' and args.to_type == 'hex':
+        print(hex(input_data))
+    elif args.from_type == 'braille' and args.to_type == 'dot':
+        print(dot(input_data))
+    elif args.from_type == 'braille' and args.to_type == 'matrix':
+        print(matrix(input_data))
+    elif args.from_type == 'hex' and args.to_type == 'braille':
+         # Assume input is comma separated hex codes
+         arr = input_data.split(',')
+         print(hex2braille(arr))
+    elif args.from_type == 'dot' and args.to_type == 'braille':
+         arr = input_data.split(',')
+         print(dot2braille(arr))
+    # Matrix input via CLI is tricky, skipping for now or user can pass JSON string?
+    # sticking to basic requirements.
+    else:
+        print(f"Conversion from {args.from_type} to {args.to_type} not directly supported in CLI yet.")
+
+if __name__ == "__main__":
+    cli()

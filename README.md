@@ -2,13 +2,37 @@
 
 Braille (6-dot cell patterns) for Python
 
-## Grade 1
+## Usage
 
-	import pybrl
+### Library
 
-	print pybrl.braille("braille for python is cool!") -> "⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮"
+```python
+import pybrl
 
-	print pybrl.ascii("⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮") -> "braille for python is cool!"
+print(pybrl.braille("braille for python is cool!"))
+# Output: "⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮"
+
+print(pybrl.ascii("⠃⠗⠁⠊⠇⠇⠑⠀⠋⠕⠗⠀⠏⠽⠞⠓⠕⠝⠀⠊⠎⠀⠉⠕⠕⠇⠮"))
+# Output: "braille for python is cool!"
+```
+
+### CLI
+
+Pybrl now includes a command-line interface.
+
+```bash
+# Convert ASCII to Braille
+pybrl "Hello World"
+# Output: ⠓⠑⠇⠇⠕⠀⠺⠕⠗⠇⠙
+
+# Convert Braille to ASCII
+pybrl "⠓⠑⠇⠇⠕⠀⠺⠕⠗⠇⠙" --from braille --to ascii
+# Output: hello world
+
+# Convert Braille to Hex codes
+pybrl "⠁⠃" --from braille --to hex
+# Output: ['41', '42']
+```
 
 ## Conversions
 
@@ -31,11 +55,7 @@ CSV file, that hold basic mapping between Braille symbols, ascii, hex, unicode, 
 
 https://github.com/markomanninen/pybrl/blob/master/braille_mappings.csv
 
-## IPython notebook demo
-
-https://github.com/markomanninen/pybrl/blob/master/Braille%20for%20Python%20(pybrl).ipynb
-
-Sources:
+## Sources:
 
 https://en.wikipedia.org/wiki/Braille
 https://en.wikipedia.org/wiki/Braille_ASCII
