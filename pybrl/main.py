@@ -129,8 +129,155 @@ def braille(string):
     # Optimized using dictionary
     return ''.join([ascii_to_braille_map.get(c, '') for c in string])
 
+# Grade 2 mappings
+# Alphabetic Wordsigns (single letters standing for words)
+alphabetic_wordsigns = {
+    'but': 'b', 'can': 'c', 'do': 'd', 'every': 'e', 'from': 'f', 'go': 'g',
+    'have': 'h', 'just': 'j', 'knowledge': 'k', 'like': 'l', 'more': 'm',
+    'not': 'n', 'people': 'p', 'quite': 'q', 'rather': 'r', 'so': 's',
+    'that': 't', 'us': 'u', 'very': 'v', 'will': 'w', 'it': 'x', 'you': 'y',
+    'as': 'z'
+}
+
+# Strong Contractions (words)
+strong_wordsigns = {
+    'child': '⠡', 'shall': '⠩', 'this': '⠹', 'which': '⠱', 'out': '⠳', 'still': '⠌',
+    'and': '⠯', 'for': '⠿', 'of': '⠷', 'the': '⠮', 'with': '⠾',
+    # Lower Wordsigns
+    'his': '⠦', 'was': '⠴', 'were': '⠶', 'enough': '⠢', 'in': '⠔', 'be': '⠆' 
+    # Note: 'enough', 'in', 'be' are also groupsigns, but handled separately or via wordsign match first
+}
+
+# Strong Groupsigns (part of words)
+strong_groupsigns = {
+    'ch': '⠡', 'gh': '⠣', 'sh': '⠩', 'th': '⠹', 'wh': '⠱', 'ed': '⠫',
+    'er': '⠻', 'ou': '⠳', 'ow': '⠪', 'st': '⠌', 'ing': '⠬', 'ar': '⠜',
+    'and': '⠯', 'for': '⠿', 'of': '⠷', 'the': '⠮', 'with': '⠾',
+    # Lower Groupsigns (simplified, 'en'='enough' symbol, 'in'='in' symbol)
+    'en': '⠢', 'in': '⠔', 
+    # Initial-Letter Contractions (Dot 5)
+    'day': '⠐⠙', 'ever': '⠐⠑', 'father': '⠐⠋', 'here': '⠐⠓', 'know': '⠐⠅',
+    'lord': '⠐⠇', 'mother': '⠐⠍', 'name': '⠐⠝', 'one': '⠐⠕', 'part': '⠐⠏',
+    'question': '⠐⠟', 'right': '⠐⠗', 'some': '⠐⠎', 'time': '⠐⠞', 'under': '⠐⠥',
+    'work': '⠐⠺', 'young': '⠐⠽',
+    # Initial-Letter Contractions (Dot 4-5)
+    'upon': '⠘⠥', 'word': '⠘⠺', 'these': '⠘⠮', 'those': '⠘⠹', 'whose': '⠘⠱',
+    # Initial-Letter Contractions (Dot 4-5-6)
+    'cannot': '⠸⠉', 'had': '⠸⠓', 'many': '⠸⠍', 'spirit': '⠸⠎', 'world': '⠸⠺',
+    'their': '⠸⠮'
+}
+
+# Final-Letter Groupsigns (cannot be used at start of word)
+final_letter_groupsigns = {
+    'ound': '⠨⠙', 'ance': '⠨⠑', 'sion': '⠨⠝', 'less': '⠨⠎', 'ount': '⠨⠞',
+    'ence': '⠰⠑', 'ong': '⠰⠛', 'ful': '⠰⠇', 'tion': '⠰⠝', 'ness': '⠰⠎',
+    'ment': '⠰⠞', 'ity': '⠰⠽'
+}
+
+# Shortforms (whole words)
+shortforms = {
+    'about': '⠁⠃', 'above': '⠁⠃⠧', 'according': '⠁⠉', 'across': '⠁⠉⠗',
+    'after': '⠁⠋', 'again': '⠁⠛⠝', 'against': '⠁⠛⠌', 'almost': '⠁⠇⠍',
+    'already': '⠁⠇⠗', 'also': '⠁⠇', 'although': '⠁⠇⠹', 'altogether': '⠁⠇⠞',
+    'always': '⠁⠇⠺', 'because': '⠆⠉', 'before': '⠆⠋', 'behind': '⠆⠓',
+    'below': '⠆⠇', 'beneath': '⠆⠝', 'beside': '⠆⠎', 'between': '⠆⠞',
+    'beyond': '⠆⠽', 'blind': 'b⠇', 'braille': '⠃⠗⠇', 'children': '⠡⠝',
+    'first': '⠋⠌', 'friend': '⠋⠗', 'good': '⠛⠙', 'great': '⠛⠗⠞',
+    'him': '⠓⠍', 'himself': '⠓⠍⠋', 'immediate': '⠊⠍⠍', 'little': '⠇⠇',
+    'letter': '⠇⠗', 'necessary': '⠝⠑⠉', 'neither': '⠝⠑⠊', 'paid': '⠏⠙',
+    'quick': '⠟⠅', 'said': '⠎⠙', 'together': '⠞⠛⠗', 'tomorrow': '⠞⠍',
+    'today': '⠞⠙', 'tonight': '⠞⠝', 'would': '⠺⠙', 'your': '⠽⠗',
+    'yourself': '⠽⠗⠋', 'yourselves': '⠽⠗⠧⠎'
+}
+
 def braille2(string):
-    return "Grade 2 conversion not supported yet. you should use convert function to find out translation possibilities for Grade 2."
+    """
+    Convert string to Grade 2 Braille (contracted).
+    Currently supports:
+    - Alphabetic Wordsigns (e.g., 'but' -> 'b')
+    - Strong Wordsigns (e.g., 'and', 'the')
+    - Strong Groupsigns (e.g., 'ch', 'sh', 'ing')
+    - Lower Wordsigns (e.g., 'his', 'was')
+    - Initial-Letter Contractions (e.g., 'day', 'know', 'cannot')
+    - Final-Letter Groupsigns (e.g., 'tion', 'ness') - not at start of word
+    - Shortforms (e.g., 'about', 'good')
+    """
+    words_list = string.split(' ')
+    res = []
+    
+    for word in words_list:
+        # 1. Check for Alphabetic Wordsigns (whole word match)
+        lower_word = word.lower()
+        # Handle punctuation later? For now assume clean words or simple punctuation
+        # A simple approach for punctuation is needed, but let's stick to core logic first.
+        
+        if lower_word in alphabetic_wordsigns:
+            # Map to the letter, then to braille
+            letter = alphabetic_wordsigns[lower_word]
+            res.append(ascii_to_braille_map.get(letter, ''))
+            continue
+            
+        if lower_word in strong_wordsigns:
+            res.append(strong_wordsigns[lower_word])
+            continue
+            
+        if lower_word in shortforms:
+            res.append(shortforms[lower_word])
+            continue
+            
+        # 2. Process groupsigns within the word
+        # We need to iterate and replace. 
+        # A simple greedy approach: replace longest matches first?
+        # Or just iterate through the string.
+        
+        # Sort groupsigns by length (descending) to match longest first
+        # (though for these specific ones, length is mostly 2 or 3)
+        # 'ing' (3) should be checked before 'in' (2) if we had 'in'.
+        
+        # Let's build a regex or just simple replace for now.
+        # Since we don't have regex imported, we'll do a manual pass.
+        
+        # Actually, simple replace might be dangerous if order matters.
+        # e.g. 'sh' and 's' + 'h'.
+        # But here we are replacing text with braille chars.
+        # We should be careful not to re-replace braille chars.
+        
+        # Better approach: Scan the word.
+        temp_word = word
+        braille_word = ""
+        
+        i = 0
+        while i < len(temp_word):
+            match_found = False
+            
+            # Check Final-Letter Groupsigns (must not be at start)
+            if i > 0:
+                for group, symbol in sorted(final_letter_groupsigns.items(), key=lambda x: len(x[0]), reverse=True):
+                    if temp_word.startswith(group, i):
+                        braille_word += symbol
+                        i += len(group)
+                        match_found = True
+                        break
+                if match_found:
+                    continue
+
+            # Check for groupsigns starting at i
+            for group, symbol in sorted(strong_groupsigns.items(), key=lambda x: len(x[0]), reverse=True):
+                if temp_word.startswith(group, i):
+                    braille_word += symbol
+                    i += len(group)
+                    match_found = True
+                    break
+            
+            if not match_found:
+                # No contraction, just convert the char
+                char = temp_word[i]
+                braille_word += ascii_to_braille_map.get(char, '')
+                i += 1
+                
+        res.append(braille_word)
+        
+    return '⠀'.join(res) # Join with Braille space
 
 # braille to ascii
 def braille_to_ascii(string):
