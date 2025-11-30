@@ -54,11 +54,18 @@ Currently supported features:
 - **Alphabetic Wordsigns**: Single letters representing whole words (e.g., 'b' -> 'but', 'c' -> 'can').
 - **Strong Wordsigns**: Common words like 'and', 'the', 'with'.
 - **Strong Groupsigns**: Letter groups like 'ch', 'sh', 'ing', 'ed'.
+- **Lower Wordsigns**: Words like 'his', 'was', 'were'.
+- **Initial-Letter Contractions**: Words/parts like 'day', 'know', 'cannot'.
+- **Final-Letter Groupsigns**: Endings like 'tion', 'ness', 'ment'.
+- **Shortforms**: Abbreviated words like 'about', 'good', 'braille'.
 
 Example:
 ```python
 print(pybrl.braille2("you and the child"))
 # Output: "⠽⠀⠯⠀⠮⠀⠡"
+
+print(pybrl.braille2("braille is good"))
+# Output: "⠃⠗⠇⠀⠊⠎⠀⠛⠙"
 ```
 
 ## Symbols mappings

@@ -165,9 +165,8 @@ class TestPyBrlComprehensive(unittest.TestCase):
         self.assertEqual(braille2("shout"), "⠩⠳⠞")
         # 'child' (wordsign) -> ⠡
         self.assertEqual(braille2("child"), "⠡")
-        # 'children' -> 'ch' + 'i' + 'l' + 'd' + 'r' + 'en' (en is ⠢)
-        # ⠡⠊⠇⠙⠗⠢
-        self.assertEqual(braille2("children"), "⠡⠊⠇⠙⠗⠢")
+        # 'children' -> 'ch' + 'n' (shortform) -> ⠡⠝
+        self.assertEqual(braille2("children"), "⠡⠝")
         
         # Mixed sentence
         # "you and the child" -> "y" + " " + "and" + " " + "the" + " " + "child"
@@ -203,6 +202,30 @@ class TestPyBrlComprehensive(unittest.TestCase):
         # I should handle capitalization or test with lowercase for now.
         
         self.assertEqual(braille2("monday"), "⠍⠕⠝⠐⠙")
+        
+        # Final-Letter Groupsigns
+        # 'action' -> 'ac' + 'tion' -> ⠁⠉ + ⠰⠝
+        self.assertEqual(braille2("action"), "⠁⠉⠰⠝")
+        # 'careless' -> 'c' + 'ar' + 'e' + 'less' -> ⠉ + ⠜ + ⠑ + ⠨⠎
+        self.assertEqual(braille2("careless"), "⠉⠜⠑⠨⠎")
+        # 'lesson' -> 'l' + 'e' + 's' + 's' + 'o' + 'n' (less not at start)
+        # Wait, 'less' is ⠨⠎. 'lesson' starts with 'l'. 'less' is at index 0?
+        # No, 'less' starts at index 0 in 'lesson'.
+        # My logic: if i > 0 check final_letter_groupsigns.
+        # So 'lesson' -> 'less' at i=0 is SKIPPED.
+        # 'l' -> ⠇. i=1.
+        # 'e' -> ⠑. i=2.
+        # 's' -> ⠎. i=3.
+        # 's' -> ⠎. i=4.
+        # 'o' -> ⠕. i=5.
+        # 'n' -> ⠝. i=6.
+        # Result: ⠇⠑⠎⠎⠕⠝
+        self.assertEqual(braille2("lesson"), "⠇⠑⠎⠎⠕⠝")
+        
+        # Shortforms
+        self.assertEqual(braille2("about"), "⠁⠃")
+        self.assertEqual(braille2("good"), "⠛⠙")
+        self.assertEqual(braille2("braille"), "⠃⠗⠇")
 
     def test_generic_convert(self):
         """Test the generic convert function."""

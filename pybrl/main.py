@@ -167,6 +167,29 @@ strong_groupsigns = {
     'their': '⠸⠮'
 }
 
+# Final-Letter Groupsigns (cannot be used at start of word)
+final_letter_groupsigns = {
+    'ound': '⠨⠙', 'ance': '⠨⠑', 'sion': '⠨⠝', 'less': '⠨⠎', 'ount': '⠨⠞',
+    'ence': '⠰⠑', 'ong': '⠰⠛', 'ful': '⠰⠇', 'tion': '⠰⠝', 'ness': '⠰⠎',
+    'ment': '⠰⠞', 'ity': '⠰⠽'
+}
+
+# Shortforms (whole words)
+shortforms = {
+    'about': '⠁⠃', 'above': '⠁⠃⠧', 'according': '⠁⠉', 'across': '⠁⠉⠗',
+    'after': '⠁⠋', 'again': '⠁⠛⠝', 'against': '⠁⠛⠌', 'almost': '⠁⠇⠍',
+    'already': '⠁⠇⠗', 'also': '⠁⠇', 'although': '⠁⠇⠹', 'altogether': '⠁⠇⠞',
+    'always': '⠁⠇⠺', 'because': '⠆⠉', 'before': '⠆⠋', 'behind': '⠆⠓',
+    'below': '⠆⠇', 'beneath': '⠆⠝', 'beside': '⠆⠎', 'between': '⠆⠞',
+    'beyond': '⠆⠽', 'blind': 'b⠇', 'braille': '⠃⠗⠇', 'children': '⠡⠝',
+    'first': '⠋⠌', 'friend': '⠋⠗', 'good': '⠛⠙', 'great': '⠛⠗⠞',
+    'him': '⠓⠍', 'himself': '⠓⠍⠋', 'immediate': '⠊⠍⠍', 'little': '⠇⠇',
+    'letter': '⠇⠗', 'necessary': '⠝⠑⠉', 'neither': '⠝⠑⠊', 'paid': '⠏⠙',
+    'quick': '⠟⠅', 'said': '⠎⠙', 'together': '⠞⠛⠗', 'tomorrow': '⠞⠍',
+    'today': '⠞⠙', 'tonight': '⠞⠝', 'would': '⠺⠙', 'your': '⠽⠗',
+    'yourself': '⠽⠗⠋', 'yourselves': '⠽⠗⠧⠎'
+}
+
 def braille2(string):
     """
     Convert string to Grade 2 Braille (contracted).
@@ -176,6 +199,8 @@ def braille2(string):
     - Strong Groupsigns (e.g., 'ch', 'sh', 'ing')
     - Lower Wordsigns (e.g., 'his', 'was')
     - Initial-Letter Contractions (e.g., 'day', 'know', 'cannot')
+    - Final-Letter Groupsigns (e.g., 'tion', 'ness') - not at start of word
+    - Shortforms (e.g., 'about', 'good')
     """
     words_list = string.split(' ')
     res = []
@@ -194,6 +219,10 @@ def braille2(string):
             
         if lower_word in strong_wordsigns:
             res.append(strong_wordsigns[lower_word])
+            continue
+            
+        if lower_word in shortforms:
+            res.append(shortforms[lower_word])
             continue
             
         # 2. Process groupsigns within the word
@@ -220,6 +249,18 @@ def braille2(string):
         i = 0
         while i < len(temp_word):
             match_found = False
+            
+            # Check Final-Letter Groupsigns (must not be at start)
+            if i > 0:
+                for group, symbol in sorted(final_letter_groupsigns.items(), key=lambda x: len(x[0]), reverse=True):
+                    if temp_word.startswith(group, i):
+                        braille_word += symbol
+                        i += len(group)
+                        match_found = True
+                        break
+                if match_found:
+                    continue
+
             # Check for groupsigns starting at i
             for group, symbol in sorted(strong_groupsigns.items(), key=lambda x: len(x[0]), reverse=True):
                 if temp_word.startswith(group, i):
