@@ -86,4 +86,4 @@ http://www.htctu.fhda.edu/trainings/manuals/alt/grade_two_day_2.pdf
 
 ## The MIT License (MIT)
 
-Copyright (c) 2015 Marko Manninen
+Copyright (c) 2015/2025 Marko Manninen
